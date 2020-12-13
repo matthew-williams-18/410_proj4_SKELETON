@@ -7,6 +7,7 @@
 #include <string>
 
 #include "../includes/file_IO.h"
+#include "../includes/PRINT.h"
 
 using namespace std;
 //if myString does not contain a string rep of number returns o
@@ -72,8 +73,10 @@ int File_IO::loadData() {
 
 	ifstream myInFile;
 	myInFile.open(filename);
-	if (!myInFile.is_open())
+	if (!myInFile.is_open()){
+		PRINT1("failed to open data file");
 		return COULD_NOT_OPEN_FILE;
+	}
 
 	//processfile contents
 	iRet = processData(myInFile);

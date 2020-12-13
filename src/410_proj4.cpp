@@ -37,6 +37,15 @@ vector<ORDER> order_out_Vector;
 //used to make PRINT statements work properly
 mutex printMutex;
 
+//container to hold my threads
+vector<thread> myThreads;
+
+int NUMBER_THREADS_TO_RUN = 5;
+
+string dataInputFile1 = "in1.txt";
+string dataInputFile2 = "in2.txt";
+string dataInputFile3 = "in3.txt";
+
 //*************************************************
 //runs waiter until orders all read and placed
 //on order_in_Q then exits
@@ -55,6 +64,7 @@ void doBaker(int id) {
 //prints what is in order_out_Vector
 //DO NOT CALL THIS WHEN MULTIPLE THREADS ARE ACCESSING order_out_Vector
 void audit_results() {
+	PRINT1("Entered audit results");
 	std::vector<ORDER>::iterator itOrder;
 	std::vector<Box>::iterator itBox;
 
@@ -82,11 +92,32 @@ void audit_results() {
 	PRINT2("Total donuts made   = ", total_donuts);
 	PRINT2("Total number boxes  = ", total_boxes);
 	PRINT2("Total orders filled = ", total_orders);
+//	PRINT1("hello");
 }
 
 int main()
 {
-	//TODO your code here
+	for(int i = 0; i < NUMBER_THREADS_TO_RUN; i++){
+		if(i == 0){ //first thread will be the waiter
+			myThreads.push_back(thread(doWaiter, 1, dataInputFile1));
+		}
+		else{
+			myThreads.push_back(thread(doBaker, i));
+		}
+	}
+
+//	cout << "howdy there\n";
+
+	for (int i = 0; i < myThreads.size(); i++){
+		myThreads.at(i).join();
+		PRINT3("joined ",i," threads")
+	}
+
+	audit_results();
+	PRINT1("done\n");
 	return SUCCESS;
 }
+
+
+
 
